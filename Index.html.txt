@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farbberatung — Professionelle Farbtyp-Analyse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --rose: #f0eef5;
+    --rose-mid: #d8d0e8;
+    --rose-deep: #7c5cbf;
+    --cream: #f8f8fb;
+    --gold: #6b3fa0;
+    --gold-light: #c9b8e8;
+    --gold-pale: #ede8f5;
+    --text-dark: #1a1428;
+    --text-mid: #5a4d6e;
+    --text-light: #9b8ab0;
+    --white: #ffffff;
+    --shadow: rgba(100,80,150,0.10);
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Jost’, sans-serif;
+background: var(–cream);
+color: var(–text-dark);
+min-height: 100vh;
+}
+
+/* HEADER */
+header {
+background: linear-gradient(135deg, #ede8f5 0%, #f8f8fb 60%, #e8e0f5 100%);
+padding: 2.5rem 2rem 2rem;
+text-align: center;
+border-bottom: 1px solid var(–rose-mid);
+position: relative;
+overflow: hidden;
+}
+header::before {
+content: ‘’;
+position: absolute;
+top: -60px; right: -60px;
+width: 200px; height: 200px;
+border-radius: 50%;
+background: radial-gradient(circle, var(–gold-light) 0%, transparent 70%);
+opacity: 0.5;
+}
+.logo-placeholder {
+display: inline-block;
+border: 1.5px solid var(–gold);
+color: var(–gold);
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 0.75rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+padding: 0.4rem 1rem;
+margin-bottom: 1rem;
+border-radius: 2px;
+}
+header h1 {
+font-family: ‘Cormorant Garamond’, serif;
+font-weight: 300;
+font-size: clamp(1.8rem, 5vw, 2.8rem);
+color: var(–text-dark);
+letter-spacing: 0.05em;
+}
+header p {
+font-size: 0.85rem;
+color: var(–text-mid);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-top: 0.4rem;
+font-weight: 300;
+}
+
+/* PROGRESS */
+.progress-bar {
+display: flex;
+justify-content: center;
+gap: 0;
+padding: 1.5rem 2rem;
+background: var(–white);
+border-bottom: 1px solid var(–rose-mid);
+overflow-x: auto;
+}
+.step-indicator {
+display: flex;
+align-items: center;
+gap: 0;
+cursor: default;
+}
+.step-dot {
+width: 28px; height: 28px;
+border-radius: 50%;
+border: 1.5px solid var(–rose-deep);
+display: flex; align-items: center; justify-content: center;
+font-size: 0.7rem;
+font-weight: 500;
+color: var(–rose-deep);
+background: var(–white);
+transition: all 0.3s;
+flex-shrink: 0;
+}
+.step-dot.active {
+background: var(–gold);
+border-color: var(–gold);
+color: var(–white);
+}
+.step-dot.done {
+background: var(–rose-deep);
+border-color: var(–rose-deep);
+color: var(–white);
+}
+.step-line {
+width: 40px; height: 1px;
+background: var(–rose-mid);
+flex-shrink: 0;
+}
+.step-label {
+font-size: 0.65rem;
+color: var(–text-light);
+text-align: center;
+margin-top: 0.3rem;
+letter-spacing: 0.05em;
+white-space: nowrap;
+}
+.step-with-label {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+/* MAIN CONTAINER */
+main {
+max-width: 820px;
+margin: 0 auto;
+padding: 2rem 1.5rem 4rem;
+}
+
+/* SECTIONS */
+.section {
+display: none;
+animation: fadeIn 0.4s ease;
+}
+.section.active { display: block; }
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* CARDS */
+.card {
+background: var(–white);
+border-radius: 12px;
+padding: 2rem;
+margin-bottom: 1.5rem;
+box-shadow: 0 2px 20px var(–shadow);
+border: 1px solid var(–rose-mid);
+}
+.card-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.4rem;
+font-weight: 400;
+color: var(–text-dark);
+margin-bottom: 1.5rem;
+padding-bottom: 0.75rem;
+border-bottom: 1px solid var(–gold-pale);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.card-title span { color: var(–gold); font-size: 1rem; }
+
+/* FORM ELEMENTS */
+.form-group {
+margin-bottom: 1.25rem;
+}
+label {
+display: block;
+font-size: 0.78rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-mid);
+margin-bottom: 0.4rem;
+font-weight: 500;
+}
+input[type=“text”], input[type=“date”], textarea, select {
+width: 100%;
+padding: 0.7rem 1rem;
+border: 1px solid var(–rose-mid);
+border-radius: 8px;
+font-family: ‘Jost’, sans-serif;
+font-size: 0.9rem;
+color: var(–text-dark);
+background: var(–cream);
+transition: border-color 0.2s, box-shadow 0.2s;
+outline: none;
+}
+input:focus, textarea:focus, select:focus {
+border-color: var(–gold);
+box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+/* FOTO UPLOAD */
+.upload-zone {
+border: 2px dashed var(–rose-deep);
+border-radius: 12px;
+padding: 2.5rem;
+text-align: center;
+cursor: pointer;
+transition: all 0.3s;
+background: var(–rose);
+position: relative;
+}
+.upload-zone:hover {
+border-color: var(–gold);
+background: var(–gold-pale);
+}
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.upload-text { font-family: ‘Cormorant Garamond’, serif; font-size: 1.1rem; color: var(–text-mid); }
+.upload-sub { font-size: 0.75rem; color: var(–text-light); margin-top: 0.3rem; }
+
+.preview-container {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+margin-top: 1rem;
+}
+.preview-img {
+width: 120px; height: 120px;
+object-fit: cover;
+border-radius: 8px;
+border: 2px solid var(–rose-mid);
+}
+
+/* EXTRACTED COLORS */
+.extracted-colors {
+display: flex;
+gap: 0.75rem;
+flex-wrap: wrap;
+margin-top: 1rem;
+align-items: center;
+}
+.color-swatch {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.3rem;
+}
+.swatch-circle {
+width: 44px; height: 44px;
+border-radius: 50%;
+border: 2px solid rgba(255,255,255,0.8);
+box-shadow: 0 2px 8px var(–shadow);
+}
+.swatch-label { font-size: 0.6rem; color: var(–text-light); text-align: center; }
+
+/* RADIO GROUPS */
+.radio-group {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+}
+.radio-btn {
+padding: 0.45rem 0.9rem;
+border: 1.5px solid var(–rose-mid);
+border-radius: 20px;
+font-size: 0.8rem;
+cursor: pointer;
+transition: all 0.2s;
+color: var(–text-mid);
+background: var(–white);
+user-select: none;
+}
+.radio-btn:hover { border-color: var(–gold); color: var(–text-dark); }
+.radio-btn.selected {
+background: var(–gold);
+border-color: var(–gold);
+color: var(–white);
+}
+
+/* BUTTONS */
+.btn-primary {
+background: linear-gradient(135deg, var(–gold) 0%, #b8933e 100%);
+color: var(–white);
+border: none;
+padding: 0.85rem 2rem;
+border-radius: 8px;
+font-family: ‘Jost’, sans-serif;
+font-size: 0.85rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.3s;
+box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+}
+.btn-primary:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(201,168,76,0.4);
+}
+.btn-secondary {
+background: var(–white);
+color: var(–text-mid);
+border: 1.5px solid var(–rose-mid);
+padding: 0.85rem 2rem;
+border-radius: 8px;
+font-family: ‘Jost’, sans-serif;
+font-size: 0.85rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(–gold); color: var(–text-dark); }
+
+.btn-group {
+display: flex;
+gap: 1rem;
+justify-content: flex-end;
+margin-top: 1.5rem;
+flex-wrap: wrap;
+}
+
+/* ERGEBNIS */
+.result-hero {
+background: linear-gradient(135deg, var(–rose) 0%, var(–gold-pale) 100%);
+border-radius: 16px;
+padding: 2.5rem;
+text-align: center;
+margin-bottom: 1.5rem;
+border: 1px solid var(–gold-light);
+position: relative;
+overflow: hidden;
+}
+.result-hero::before {
+content: ‘’;
+position: absolute;
+top: -40px; right: -40px;
+width: 150px; height: 150px;
+border-radius: 50%;
+background: radial-gradient(circle, var(–gold-light) 0%, transparent 70%);
+opacity: 0.6;
+}
+.result-type-name {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(2rem, 6vw, 3.2rem);
+font-weight: 300;
+color: var(–text-dark);
+letter-spacing: 0.05em;
+}
+.result-type-sub {
+font-size: 0.8rem;
+color: var(–text-mid);
+letter-spacing: 0.15em;
+text-transform: uppercase;
+margin-top: 0.3rem;
+}
+.confidence-bar-wrap {
+margin-top: 1.5rem;
+display: inline-flex;
+align-items: center;
+gap: 1rem;
+background: rgba(255,255,255,0.6);
+padding: 0.5rem 1.5rem;
+border-radius: 30px;
+}
+.confidence-bar {
+width: 120px; height: 6px;
+background: var(–rose-mid);
+border-radius: 3px;
+overflow: hidden;
+}
+.confidence-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–gold), var(–rose-deep));
+border-radius: 3px;
+transition: width 1s ease;
+}
+.confidence-text { font-size: 0.85rem; color: var(–text-mid); font-weight: 500; }
+
+/* FARBPALETTE */
+.palette-grid {
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
+.palette-color {
+flex: 1;
+min-width: 50px;
+height: 70px;
+border-radius: 8px;
+box-shadow: 0 2px 8px var(–shadow);
+position: relative;
+cursor: pointer;
+transition: transform 0.2s;
+}
+.palette-color:hover { transform: translateY(-3px); }
+.palette-color-name {
+position: absolute;
+bottom: -22px;
+left: 50%;
+transform: translateX(-50%);
+font-size: 0.6rem;
+color: var(–text-light);
+white-space: nowrap;
+}
+.palette-wrap { margin-bottom: 2rem; }
+
+/* EMPFEHLUNGEN */
+.rec-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1rem;
+}
+.rec-card {
+background: var(–cream);
+border-radius: 10px;
+padding: 1.25rem;
+border: 1px solid var(–rose-mid);
+}
+.rec-card h4 {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1rem;
+font-weight: 400;
+color: var(–text-dark);
+margin-bottom: 0.75rem;
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+.rec-card ul {
+list-style: none;
+padding: 0;
+}
+.rec-card ul li {
+font-size: 0.8rem;
+color: var(–text-mid);
+padding: 0.25rem 0;
+border-bottom: 1px solid var(–rose-mid);
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+.rec-card ul li:last-child { border-bottom: none; }
+.rec-card ul li::before {
+content: ‘·’;
+color: var(–gold);
+font-size: 1rem;
+flex-shrink: 0;
+}
+
+/* MEIDEN */
+.avoid-colors {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+}
+.avoid-tag {
+background: var(–rose);
+border: 1px solid var(–rose-deep);
+color: var(–rose-deep);
+border-radius: 20px;
+padding: 0.3rem 0.8rem;
+font-size: 0.75rem;
+display: flex;
+align-items: center;
+gap: 0.3rem;
+}
+.avoid-dot {
+width: 10px; height: 10px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+/* CANVAS HIDDEN */
+#outputCanvas { display: none; }
+
+/* LOADING */
+.loading {
+text-align: center;
+padding: 3rem;
+display: none;
+}
+.loading.active { display: block; }
+.spinner {
+width: 40px; height: 40px;
+border: 3px solid var(–rose-mid);
+border-top-color: var(–gold);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading p {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.1rem;
+color: var(–text-mid);
+font-style: italic;
+}
+
+/* ALTERNATIVE TYPEN */
+.alt-types {
+display: flex;
+gap: 0.75rem;
+flex-wrap: wrap;
+margin-top: 1rem;
+}
+.alt-type-chip {
+background: var(–white);
+border: 1.5px solid var(–rose-mid);
+border-radius: 8px;
+padding: 0.6rem 1rem;
+font-size: 0.8rem;
+color: var(–text-mid);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.alt-bar {
+width: 40px; height: 4px;
+background: var(–rose-mid);
+border-radius: 2px;
+overflow: hidden;
+}
+.alt-fill {
+height: 100%;
+background: var(–rose-deep);
+border-radius: 2px;
+}
+
+/* NOTIZEN IM ERGEBNIS */
+.result-note {
+font-size: 0.8rem;
+color: var(–text-light);
+font-style: italic;
+background: var(–rose);
+border-left: 3px solid var(–gold);
+padding: 0.75rem 1rem;
+border-radius: 0 8px 8px 0;
+margin-top: 1rem;
+}
+
+/* EXPORT BUTTONS */
+.export-row {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+justify-content: center;
+margin-top: 2rem;
+padding-top: 1.5rem;
+border-top: 1px solid var(–rose-mid);
+}
+.export-btn {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0.75rem 1.5rem;
+border-radius: 8px;
+font-family: ‘Jost’, sans-serif;
+font-size: 0.8rem;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.3s;
+border: none;
+}
+.export-png {
+background: var(–rose);
+color: var(–rose-deep);
+border: 1.5px solid var(–rose-deep);
+}
+.export-png:hover { background: var(–rose-deep); color: var(–white); }
+.export-pdf {
+background: linear-gradient(135deg, var(–gold) 0%, #b8933e 100%);
+color: var(–white);
+box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+}
+.export-pdf:hover { transform: translateY(-2px); }
+.export-new {
+background: var(–white);
+color: var(–text-mid);
+border: 1.5px solid var(–rose-mid);
+}
+.export-new:hover { border-color: var(–gold); }
+
+/* MAKEUP TABS */
+.tab-group {
+display: flex;
+gap: 0;
+border-bottom: 1px solid var(–rose-mid);
+margin-bottom: 1rem;
+}
+.tab-btn {
+padding: 0.5rem 1rem;
+font-size: 0.75rem;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+cursor: pointer;
+border: none;
+background: none;
+color: var(–text-light);
+border-bottom: 2px solid transparent;
+transition: all 0.2s;
+font-family: ‘Jost’, sans-serif;
+}
+.tab-btn.active {
+color: var(–gold);
+border-bottom-color: var(–gold);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width: 600px) {
+.card { padding: 1.25rem; }
+.result-hero { padding: 1.5rem; }
+.export-row { gap: 0.5rem; }
+.export-btn { padding: 0.65rem 1rem; font-size: 0.7rem; }
+.step-line { width: 20px; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo-placeholder">Dein Logo</div>
+  <h1>Farbtyp-Analyse</h1>
+  <p>Professionelle Farbberatung</p>
+</header>
+
+<!-- PROGRESS -->
+
+<div class="progress-bar">
+  <div class="step-with-label">
+    <div class="step-dot active" id="dot1">1</div>
+    <div class="step-label">Kundin</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step-with-label">
+    <div class="step-dot" id="dot2">2</div>
+    <div class="step-label">Foto</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step-with-label">
+    <div class="step-dot" id="dot3">3</div>
+    <div class="step-label">Merkmale</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step-with-label">
+    <div class="step-dot" id="dot4">4</div>
+    <div class="step-label">Ergebnis</div>
+  </div>
+</div>
+
+<main>
+
+<!-- SCHRITT 1: KUNDENDATEN -->
+
+<div class="section active" id="step1">
+  <div class="card">
+    <div class="card-title"><span>✦</span> Kundendaten</div>
+    <div class="form-group">
+      <label>Name der Kundin</label>
+      <input type="text" id="customerName" placeholder="Vollständiger Name" />
+    </div>
+    <div class="form-group">
+      <label>Datum</label>
+      <input type="date" id="consultDate" />
+    </div>
+    <div class="form-group">
+      <label>Notizen (optional)</label>
+      <textarea id="consultNote" placeholder="Besonderheiten, Wünsche, Anmerkungen…"></textarea>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="btn-primary" onclick="goStep(2)">Weiter →</button>
+  </div>
+</div>
+
+<!-- SCHRITT 2: FOTO -->
+
+<div class="section" id="step2">
+  <div class="card">
+    <div class="card-title"><span>✦</span> Foto der Kundin</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(event)" />
+      <div class="upload-icon">📷</div>
+      <div class="upload-text">Foto hochladen oder hier ablegen</div>
+      <div class="upload-sub">JPG, PNG, HEIC · Ein oder mehrere Fotos</div>
+    </div>
+    <div class="preview-container" id="previewContainer"></div>
+    <div id="colorExtractSection" style="display:none; margin-top:1.5rem;">
+      <label style="margin-bottom:0.75rem; display:block;">Automatisch erkannte Farben</label>
+      <div class="extracted-colors" id="extractedColors"></div>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button class="btn-secondary" onclick="goStep(1)">← Zurück</button>
+    <button class="btn-primary" onclick="goStep(3)">Weiter →</button>
+  </div>
+</div>
+
+<!-- SCHRITT 3: MANUELLE EINGABE -->
+
+<div class="section" id="step3">
+  <div class="card">
+    <div class="card-title"><span>✦</span> Merkmale eingeben / korrigieren</div>
+
+```
+<div class="form-group">
+  <label>Hautton</label>
+  <div class="radio-group" id="rg-hautton">
+    <div class="radio-btn" onclick="selectRadio(this,'hautton','sehr hell')">Sehr hell</div>
+    <div class="radio-btn" onclick="selectRadio(this,'hautton','hell')">Hell</div>
+    <div class="radio-btn" onclick="selectRadio(this,'hautton','mittel')">Mittel</div>
+    <div class="radio-btn" onclick="selectRadio(this,'hautton','dunkel')">Dunkel</div>
+    <div class="radio-btn" onclick="selectRadio(this,'hautton','sehr dunkel')">Sehr dunkel</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>Unterton</label>
+  <div class="radio-group" id="rg-unterton">
+    <div class="radio-btn" onclick="selectRadio(this,'unterton','warm')">🔶 Warm (goldig/gelblich)</div>
+    <div class="radio-btn" onclick="selectRadio(this,'unterton','neutral')">⚪ Neutral</div>
+    <div class="radio-btn" onclick="selectRadio(this,'unterton','kühl')">🔷 Kühl (rosa/bläulich)</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>Haarfarbe</label>
+  <div class="radio-group" id="rg-haar">
+    <div class="radio-btn" onclick="selectRadio(this,'haar','platinblond')">Platinblond</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','hellblond')">Hellblond</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','goldblond')">Goldblond</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','aschblond')">Aschblond</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','hellbraun')">Hellbraun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','mittelbraun')">Mittelbraun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','dunkelbraun')">Dunkelbraun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','rotbraun')">Rotbraun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','kupferrot')">Kupferrot</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','schwarz')">Schwarz</div>
+    <div class="radio-btn" onclick="selectRadio(this,'haar','grau/weiß')">Grau / Weiß</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>Augenfarbe</label>
+  <div class="radio-group" id="rg-augen">
+    <div class="radio-btn" onclick="selectRadio(this,'augen','hellblau')">Hellblau</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','blau')">Blau</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','blaugrau')">Blaugrau</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','grün')">Grün</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','graugrün')">Graugrün</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','haselnuss')">Haselnuss</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','hellbraun')">Hellbraun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','braun')">Braun</div>
+    <div class="radio-btn" onclick="selectRadio(this,'augen','dunkelbraun')">Dunkelbraun</div>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>Kontrast (Verhältnis Haut zu Haar/Augen)</label>
+  <div class="radio-group" id="rg-kontrast">
+    <div class="radio-btn" onclick="selectRadio(this,'kontrast','niedrig')">Niedrig (alles ähnlich hell)</div>
+    <div class="radio-btn" onclick="selectRadio(this,'kontrast','mittel')">Mittel</div>
+    <div class="radio-btn" onclick="selectRadio(this,'kontrast','hoch')">Hoch (sehr helle Haut, dunkle Haare o. ä.)</div>
+  </div>
+</div>
+```
+
+  </div>
+  <div class="btn-group">
+    <button class="btn-secondary" onclick="goStep(2)">← Zurück</button>
+    <button class="btn-primary" onclick="analyzeColorType()">Farbtyp bestimmen ✦</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+
+<div class="loading" id="loadingSection">
+  <div class="spinner"></div>
+  <p>Analysiere Farbtyp…</p>
+</div>
+
+<!-- SCHRITT 4: ERGEBNIS -->
+
+<div class="section" id="step4">
+  <div class="result-hero" id="resultHero">
+    <div class="result-type-sub">Ermittelter Farbtyp</div>
+    <div class="result-type-name" id="resultTypeName">—</div>
+    <div class="result-type-sub" id="resultTypeSubtitle"></div>
+    <div class="confidence-bar-wrap">
+      <div class="confidence-bar">
+        <div class="confidence-fill" id="confidenceFill" style="width:0%"></div>
+      </div>
+      <div class="confidence-text" id="confidenceText">—</div>
+    </div>
+  </div>
+
+  <!-- Kundendaten-Zusammenfassung -->
+
+  <div id="customerSummary" style="font-size:0.8rem; color:var(--text-light); text-align:center; margin-bottom:1.5rem;"></div>
+
+  <!-- Alternative Typen -->
+
+  <div class="card" id="altCard" style="display:none;">
+    <div class="card-title"><span>✦</span> Weitere mögliche Typen</div>
+    <div class="alt-types" id="altTypes"></div>
+  </div>
+
+  <!-- Beschreibung -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Beschreibung</div>
+    <p id="typeDescription" style="font-size:0.9rem; color:var(--text-mid); line-height:1.7;"></p>
+    <div id="noteDisplay"></div>
+  </div>
+
+  <!-- Farbpalette -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Deine Farbpalette</div>
+    <div class="palette-wrap">
+      <div class="palette-grid" id="paletteGrid"></div>
+    </div>
+  </div>
+
+  <!-- Empfehlungen -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Kleidungsempfehlungen</div>
+    <div class="rec-grid" id="clothingRecs"></div>
+  </div>
+
+  <!-- Make-up -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Make-up Empfehlungen</div>
+    <div class="tab-group">
+      <button class="tab-btn active" onclick="switchTab('alltag',this)">Alltag</button>
+      <button class="tab-btn" onclick="switchTab('business',this)">Business</button>
+      <button class="tab-btn" onclick="switchTab('abend',this)">Abend</button>
+    </div>
+    <div class="tab-content active" id="tab-alltag"><div class="rec-grid" id="makeupAlltag"></div></div>
+    <div class="tab-content" id="tab-business"><div class="rec-grid" id="makeupBusiness"></div></div>
+    <div class="tab-content" id="tab-abend"><div class="rec-grid" id="makeupAbend"></div></div>
+  </div>
+
+  <!-- Accessoires -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Accessoires & Metalle</div>
+    <div class="rec-grid" id="accessoryRecs"></div>
+  </div>
+
+  <!-- Meiden -->
+
+  <div class="card">
+    <div class="card-title"><span>✦</span> Diese Farben besser meiden</div>
+    <div class="avoid-colors" id="avoidColors"></div>
+  </div>
+
+  <!-- Export -->
+
+  <div class="export-row">
+    <button class="export-btn export-png" onclick="exportPNG()">🖼 Bild herunterladen</button>
+    <button class="export-btn export-pdf" onclick="exportPDF()">📄 PDF exportieren</button>
+    <button class="export-btn export-new" onclick="newConsult()">＋ Neue Beratung</button>
+  </div>
+</div>
+
+</main>
+
+<!-- HIDDEN CANVAS FOR EXPORT -->
+
+<canvas id="outputCanvas"></canvas>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// WISSENSBASIS: 12 FARBTYPEN
+// ═══════════════════════════════════════════════════════════════
+const FARBTYPEN = {
+  "Heller Frühling": {
+    saison: "Frühling",
+    unterton: "warm",
+    kontrast: "niedrig",
+    hautton: ["sehr hell","hell"],
+    haar: ["hellblond","platinblond","goldblond","hellbraun"],
+    augen: ["hellblau","blau","grün","haselnuss","hellbraun"],
+    beschreibung: "Der helle Frühling hat ein zartes, strahlendes Erscheinungsbild. Die Haut ist sehr hell bis hell mit einem warmen, pfirsichfarbenen oder elfenbeinfarbenen Unterton. Das Haar ist hell – von platinblond bis hellbraun – und die Augen wirken klar und licht. Das Gesamtbild ist warm und delikat, mit wenig Kontrast zwischen Haut, Haar und Augen.",
+    palette: ["#F2C4A0","#F0B090","#EDA882","#E8956A","#F5D4B0","#F7E0C8","#E8C49A","#F0CC9E","#EBD4B4","#F5C8A0","#E8B87A","#F0D4B8"],
+    paletteNamen: ["Pfirsich","Apricot","Lachs-warm","Mandarine","Vanille","Creme","Honig","Karamell","Sand","Melone","Butterscotch","Champagner"],
+    kleidung: {
+      "Frühlings-Basics": ["Hellblau","Türkis","Koralle","Pfirsich","Hellgrün"],
+      "Akzentfarben": ["Warmgelb","Lachs","Aqua","Mintgrün"],
+      "Neutrale Töne": ["Elfenbein","Creme","Hellbeige","Kaschmir"]
+    },
+    makeupAlltag: {
+      "Teint": ["Leichte BB Cream in Elfenbein","Transparentes Puder","Dezenter Highlighter golden"],
+      "Augen": ["Hellbraun Lidschatten","Mascara in Braun","Champagner Shimmer"],
+      "Lippen": ["Nude-Rose","Pfirsich-Gloss","Babyrosa"]
+    },
+    makeupBusiness: {
+      "Teint": ["Foundation in Elfenbein","Blusher in Apricot","Bronzer sehr zart"],
+      "Augen": ["Beige-Braun Lidschatten","Brauner Kajal","Wimperntusche Braun"],
+      "Lippen": ["Nude-Beige","Rose-Beige Lippenstift"]
+    },
+    makeupAbend: {
+      "Teint": ["Glow-Foundation","Goldener Highlighter","Bronzer warm"],
+      "Augen": ["Goldbraun Lidschatten","Bronze-Shimmer","Brauner Eyeliner"],
+      "Lippen": ["Koralle","Pfirsich-Rot","Warmrosa"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold","Roségold","Messing"],
+      "Schmuck": ["Perlen in Creme","Bernstein","Edelsteine in Warm-Tönen"],
+      "Taschen & Schuhe": ["Camel","Hellbraun","Creme","Warmes Beige"]
+    },
+    meiden: [
+      { name: "Schwarz", color: "#111111" },
+      { name: "Kühles Grau", color: "#9E9E9E" },
+      { name: "Dunkelblau", color: "#1A237E" },
+      { name: "Weinrot", color: "#7B0000" },
+      { name: "Neonfarben", color: "#FF00FF" },
+      { name: "Kühles Rosa", color: "#F48FB1" }
+    ]
+  },
+
+  "Warmer Frühling": {
+    saison: "Frühling",
+    unterton: "warm",
+    kontrast: "niedrig",
+    hautton: ["hell","mittel"],
+    haar: ["goldblond","hellbraun","rotbraun","kupferrot"],
+    augen: ["grün","haselnuss","hellbraun","braun"],
+    beschreibung: "Der warme Frühling strahlt Wärme und Lebendigkeit aus. Die Haut hat einen deutlich warmen, goldenen bis pfirsichfarbenen Unterton, das Haar trägt goldene oder kupferne Nuancen. Die Augen sind warm – grün, haselnuss oder braun. Der Gesamtkontrast ist moderat, die Ausstrahlung frisch und lebendig.",
+    palette: ["#E8610A","#D4500A","#C84800","#E87820","#F0A030","#D4781A","#B84400","#E05010","#F0881A","#CC6010","#E86800","#D45A00"],
+    paletteNamen: ["Orange","Mandarine","Kürbis","Bernstein","Goldorange","Kupfer","Rostrot","Zinnober","Honiggelb","Terrakotta","Warmrot","Karamell"],
+    kleidung: {
+      "Warm-Basics": ["Rostrot","Orangerot","Karamell","Olivgrün","Warmgelb"],
+      "Akzentfarben": ["Gold","Kupfer","Türkis-warm","Moos"],
+      "Neutrale Töne": ["Camel","Dunkelbeige","Kakao","Warmbraun"]
+    },
+    makeupAlltag: {
+      "Teint": ["Warm-Foundation","Bronzer in Kupfer","Blusher in Koralle"],
+      "Augen": ["Bronzebraun","Kupfer-Shimmer","Olivgrün Akzent"],
+      "Lippen": ["Warmkoralle","Apricot","Ziegelrot-hell"]
+    },
+    makeupBusiness: {
+      "Teint": ["Warm-Beige Foundation","Warmer Bronzer","Dezenter Blusher Apricot"],
+      "Augen": ["Erdtöne Lidschatten","Brauner Kajal","Bronze-Liner"],
+      "Lippen": ["Warmbraun-Nude","Ziegelrot matt","Koralle satin"]
+    },
+    makeupAbend: {
+      "Teint": ["Luminizing Foundation","Bronzer warm","Highlighter Gold"],
+      "Augen": ["Smokey in Kupfer/Bronze","Goldener Eyeliner","Dramatische Wimpern"],
+      "Lippen": ["Ziegelrot","Orangerot","Warmbraun-Rot"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold","Rotgold","Kupfer","Bronze"],
+      "Schmuck": ["Karneol","Tigerauge","Bernstein","Topas in Warm"],
+      "Taschen & Schuhe": ["Camel","Cognac","Rostbraun","Olivgrün"]
+    },
+    meiden: [
+      { name: "Kühles Grau", color: "#9E9E9E" },
+      { name: "Eisblau", color: "#B3E5FC" },
+      { name: "Kalt-Rosa", color: "#F48FB1" },
+      { name: "Silber", color: "#C0C0C0" },
+      { name: "Dunkelviolett", color: "#4A148C" },
+      { name: "Schwarz-Weiß-Kontrast", color: "#000000" }
+    ]
+  },
+
+  "Klarer Frühling": {
+    saison: "Frühling",
+    unterton: "warm",
+    kontrast: "hoch",
+    hautton: ["sehr hell","hell"],
+    haar: ["dunkelbraun","schwarz","hellblond"],
+    augen: ["hellblau","blau","grün","türkis"],
+    beschreibung: "Der klare Frühling besticht durch einen auffälligen Kontrast und strahlende Klarheit. Sehr helle Haut trifft auf dunkle Haare und lebhafte, klare Augen. Der warme Unterton der Haut schimmert durch. Die besten Farben sind klar, leuchtend und warm – keine gemischten oder gedeckten Töne.",
+    palette: ["#E84010","#E82010","#D01010","#F06020","#E8A000","#D83000","#F08020","#3A8C20","#5CB040","#8CC820","#F4C000","#E06010"],
+    paletteNamen: ["Scharlach","Feuerrot","Knallrot","Orangerot","Goldgelb","Dunkelrot","Warmorange","Dunkelgrün","Grasgrün","Gelbgrün","Sonnengelb","Koralle"],
+    kleidung: {
+      "Klare Basics": ["Reines Weiß","Korallenrot","Türkis","Hellmarine"],
+      "Akzentfarben": ["Warmgelb","Aqua","Hellviolett","Mintgrün"],
+      "Neutrale Töne": ["Elfenbein","Hellgrau-warm","Hellbeige"]
+    },
+    makeupAlltag: {
+      "Teint": ["Leichte Foundation Elfenbein","Pfirsich-Blusher","Frischer Glow"],
+      "Augen": ["Türkis-Akzent","Hellbraun Basis","Klarer Eyeliner"],
+      "Lippen": ["Koralle","Helles Pink","Frisches Rosa"]
+    },
+    makeupBusiness: {
+      "Teint": ["Helle Foundation","Dezenter Blusher Apricot","Transparentes Puder"],
+      "Augen": ["Hellbraun-Grau","Marineblau-Kajal","Klare Mascara"],
+      "Lippen": ["Helles Korallenrot","Warmrosa","Klares Rot"]
+    },
+    makeupAbend: {
+      "Teint": ["Strahlendes Finish","Goldschimmer","Frischer Glow"],
+      "Augen": ["Türkis Smokey","Goldglitter","Tiefblauer Eyeliner"],
+      "Lippen": ["Leuchtendes Koralle","Klares Warmrot","Fuchsia-warm"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold","Roségold"],
+      "Schmuck": ["Türkis","Koralle","Aquamarin","Klare Edelsteine"],
+      "Taschen & Schuhe": ["Weiß","Kamel","Helles Beige","Koralle"]
+    },
+    meiden: [
+      { name: "Gedeckte Töne", color: "#8D9B8E" },
+      { name: "Dunkelbraun", color: "#3E2723" },
+      { name: "Khaki", color: "#827717" },
+      { name: "Graubeige", color: "#BCAAA4" },
+      { name: "Bordeaux", color: "#880E4F" },
+      { name: "Kühles Lila", color: "#7B1FA2" }
+    ]
+  },
+
+  "Heller Sommer": {
+    saison: "Sommer",
+    unterton: "kühl",
+    kontrast: "niedrig",
+    hautton: ["sehr hell","hell"],
+    haar: ["aschblond","hellblond","platinblond","grau/weiß"],
+    augen: ["hellblau","blaugrau","grün","graugrün"],
+    beschreibung: "Der helle Sommer wirkt zart, feminin und kühl. Die sehr helle Haut hat einen rosa oder beigefarbenen Unterton. Das Haar ist hell und aschig, die Augen klar und kühl. Das Gesamtbild ist weich, mit wenig Kontrast. Pastellfarben und gedeckte Töne stehen dieser Type am besten.",
+    palette: ["#F090A8","#DC6888","#C85070","#B84880","#E880A0","#F4A8C0","#D070A0","#9860A0","#C090C8","#70A8C0","#A8D0C8","#F0D8E8"],
+    paletteNamen: ["Hellrosa","Altrosa","Pink","Beere-hell","Rosé","Babyrosa","Hortensie","Lavendel","Lila-hell","Himmelblau","Mint","Zartrosa"],
+    kleidung: {
+      "Kühle Basics": ["Hellblau","Lavendel","Zartgrün","Rosé","Hellgrau"],
+      "Akzentfarben": ["Taubenblau","Softrosa","Mintgrün","Flieder"],
+      "Neutrale Töne": ["Eisgrau","Hellgrau","Rosa-Weiß","Kühles Beige"]
+    },
+    makeupAlltag: {
+      "Teint": ["Sehr helle Foundation","Rosé-Blusher","Mattes Finish"],
+      "Augen": ["Hellgrau Lidschatten","Blaue Mascara","Silber Shimmer dezent"],
+      "Lippen": ["Babyrosa","Helles Nude-Rosa","Zartes Malve"]
+    },
+    makeupBusiness: {
+      "Teint": ["Helle kühle Foundation","Puder transparent","Dezenter Blusher"],
+      "Augen": ["Hellgrau-Braun","Grauer Kajal","Schwarze Mascara"],
+      "Lippen": ["Nude-Rosa","Helles Malve","Cool-Beige"]
+    },
+    makeupAbend: {
+      "Teint": ["Perlen-Highlighter","Rosé-Blusher","Silber-Schimmer"],
+      "Augen": ["Silber Smokey","Lavendel-Akzent","Schwarzer Liner"],
+      "Lippen": ["Zartes Malve","Rosé-Beere","Kühles Rosa-Rot"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Weißgold","Platin"],
+      "Schmuck": ["Perlen in Weiß","Rosenquarz","Mondstein","Aquamarin"],
+      "Taschen & Schuhe": ["Hellgrau","Eisblau","Weiß","Hellrosa"]
+    },
+    meiden: [
+      { name: "Warmgelb", color: "#FFD600" },
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Camel", color: "#C0913A" },
+      { name: "Schwarz (pur)", color: "#111111" },
+      { name: "Brauntöne warm", color: "#795548" },
+      { name: "Rostrot", color: "#BF360C" }
+    ]
+  },
+
+  "Kühler Sommer": {
+    saison: "Sommer",
+    unterton: "kühl",
+    kontrast: "mittel",
+    hautton: ["sehr hell","hell","mittel"],
+    haar: ["aschblond","grau/weiß","dunkelbraun"],
+    augen: ["blaugrau","grau","hellblau","graugrün"],
+    beschreibung: "Der kühle Sommer hat ein kühles, elegantes Erscheinungsbild. Der Unterton der Haut ist deutlich kühl – rosa oder bläulich. Haar und Augen sind aschig bis kühl. Die besten Farben sind gedeckt-kühle Töne – keine warmen Farben, keine zu knalligen Töne.",
+    palette: ["#D0308A","#B82070","#E040A0","#9820A0","#C040D0","#6030C8","#3050C8","#4890C0","#40A080","#28987A","#C870A0","#E05098"],
+    paletteNamen: ["Magenta","Himbeere","Fuchsia","Violett","Lila","Blauviolett","Königsblau","Stahlblau","Smaragd","Jade","Pink","Dunkelrosa"],
+    kleidung: {
+      "Kühle Basics": ["Marineblau","Mittelgrau","Burgund-kühl","Taubenblau"],
+      "Akzentfarben": ["Lavendel","Fuchsia-kühl","Smaragd-kühl","Bordeaux"],
+      "Neutrale Töne": ["Graubeige","Mittelgrau","Kühles Braun","Eisgrau"]
+    },
+    makeupAlltag: {
+      "Teint": ["Kühle Foundation","Rosé-Puder","Dezenter Blusher pink"],
+      "Augen": ["Graumauve Lidschatten","Grauer Kajal","Blaue Mascara"],
+      "Lippen": ["Mauve","Cool-Rosa","Beere-hell"]
+    },
+    makeupBusiness: {
+      "Teint": ["Kühle mattes Foundation","Taupe Blusher","Setting Spray"],
+      "Augen": ["Grau-Taupe","Dunkelgrau Kajal","Schwarze Mascara"],
+      "Lippen": ["Kühles Nude","Malve","Grau-Rosa"]
+    },
+    makeupAbend: {
+      "Teint": ["Silver Highlight","Rosé-Glow","Kühl-Blusher"],
+      "Augen": ["Silber-Grau Smokey","Dunkelblauer Liner","Dramatische Wimpern"],
+      "Lippen": ["Tiefes Mauve","Beere","Kühles Dunkelrot"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Platin","Weißgold"],
+      "Schmuck": ["Labradorit","Saphir","Amethyst","Mondstein"],
+      "Taschen & Schuhe": ["Marineblau","Grau","Burgund","Schwarz"]
+    },
+    meiden: [
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Camel/Kamel", color: "#C0913A" },
+      { name: "Warmgelb", color: "#F9A825" },
+      { name: "Kupfer", color: "#BF6830" },
+      { name: "Olivgrün", color: "#558B2F" },
+      { name: "Rostrot", color: "#BF360C" }
+    ]
+  },
+
+  "Weicher Sommer": {
+    saison: "Sommer",
+    unterton: "neutral",
+    kontrast: "niedrig",
+    hautton: ["hell","mittel"],
+    haar: ["aschblond","hellbraun","mittelbraun","grau/weiß"],
+    augen: ["blaugrau","haselnuss","graugrün","hellbraun"],
+    beschreibung: "Der weiche Sommer ist der sanfteste aller Typen. Das Erscheinungsbild ist gedämpft und harmonisch – alles wirkt wie leicht eingestäubt. Der Unterton ist neutral bis leicht kühl. Haar, Haut und Augen haben einen weichen, gedeckten Ton.",
+    palette: ["#C87890","#A06880","#B09098","#907888","#C09098","#D0A8B0","#886878","#A08898","#C0A0B0","#887890","#B890A0","#D0B0B8"],
+    paletteNamen: ["Altrosa","Mauve","Rosé-Grau","Pflaume-hell","Rosé","Zartlila","Pflaume","Grau-Mauve","Rosato","Blaugrau-Lila","Rosébeige","Zartrosa"],
+    kleidung: {
+      "Weiche Basics": ["Pastellrosa","Hellblau gedämpft","Mintgrün","Lavendel"],
+      "Akzentfarben": ["Zartlila","Weichgrün","Rosé","Malve-hell"],
+      "Neutrale Töne": ["Greige","Warmgrau","Hellbeige","Rosato"]
+    },
+    makeupAlltag: {
+      "Teint": ["Sehr dezente Foundation","Transparenter Puder","Soft-Blusher"],
+      "Augen": ["Hellrosé Lidschatten","Taupe-Braun","Dezente Mascara braun"],
+      "Lippen": ["Nackte Lippe","Soft-Rosé","Malve sehr zart"]
+    },
+    makeupBusiness: {
+      "Teint": ["Leichte kühle Foundation","Dezenter Puder","Soft-Blusher mauve"],
+      "Augen": ["Mauve-Grau","Grauer Kajal","Braune Mascara"],
+      "Lippen": ["Kühles Nude","Soft-Mauve","Dezentes Rosa"]
+    },
+    makeupAbend: {
+      "Teint": ["Perlenschimmer","Soft-Glow","Weicher Blusher"],
+      "Augen": ["Grau-Mauve Smokey","Silber-Akzent","Wimperntusche schwarz"],
+      "Lippen": ["Kühles Beere-Rosé","Malve","Soft-Bordeaux"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Roségold matt","Weißgold"],
+      "Schmuck": ["Rosenquarz","Mondstein","Labradorit","Perlen"],
+      "Taschen & Schuhe": ["Greige","Rosé","Hellgrau","Mauve"]
+    },
+    meiden: [
+      { name: "Kräftiges Schwarz", color: "#111111" },
+      { name: "Reines Weiß", color: "#F5F5F5" },
+      { name: "Leuchtendes Gelb", color: "#FFD600" },
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Intensives Rot", color: "#D50000" },
+      { name: "Neonfarben", color: "#76FF03" }
+    ]
+  },
+
+  "Warmer Herbst": {
+    saison: "Herbst",
+    unterton: "warm",
+    kontrast: "niedrig",
+    hautton: ["hell","mittel"],
+    haar: ["goldblond","hellbraun","mittelbraun","rotbraun"],
+    augen: ["haselnuss","hellbraun","grün","braun"],
+    beschreibung: "Der warme Herbst strahlt natürliche Wärme aus. Haut, Haare und Augen sind alle in warmen, goldigen Erdtönen. Die Naturfarben der Herbstsaison sind perfekte Begleiter dieses Typs.",
+    palette: ["#E85020","#D04010","#C85818","#E87030","#D08830","#B86820","#C04010","#D06020","#B07820","#E09040","#C07828","#A06018"],
+    paletteNamen: ["Tomatenrot","Ziegelrot","Terrakotta","Brennorange","Kürbis","Kupfer","Rostrot","Mohnrot","Olivgold","Bernstein","Warmbraun","Mahagoni"],
+    kleidung: {
+      "Herbst-Basics": ["Olivgrün","Braun","Rostrot","Senfgelb","Terrakotta"],
+      "Akzentfarben": ["Kupfer","Goldgelb","Moosgrün","Warmkoralle"],
+      "Neutrale Töne": ["Dunkelbraun","Camel","Khaki","Warmbeige"]
+    },
+    makeupAlltag: {
+      "Teint": ["Warm-Beige Foundation","Bronzer","Pfirsich-Blusher"],
+      "Augen": ["Erdtöne","Bronzebraun","Olivgrün-Akzent"],
+      "Lippen": ["Nude-Terrakotta","Braunrot","Warmkoralle"]
+    },
+    makeupBusiness: {
+      "Teint": ["Warm-Foundation","Bronzer dezent","Zimt-Blusher"],
+      "Augen": ["Braun-Taupe","Brauner Kajal","Erdiger Shimmer"],
+      "Lippen": ["Warmbraun","Nude-Karamell","Terrakotta matt"]
+    },
+    makeupAbend: {
+      "Teint": ["Glowing Foundation","Kupfer-Highlighter","Intensiver Bronzer"],
+      "Augen": ["Kupfer-Bronze Smokey","Goldener Liner","Roter Lidschatten"],
+      "Lippen": ["Tiefes Braunrot","Ziegelrot","Warmrot"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold","Rotgold","Kupfer","Bronze","Messing"],
+      "Schmuck": ["Bernstein","Tigerauge","Karneol","Citrin"],
+      "Taschen & Schuhe": ["Cognac","Kastanienbraun","Dunkelbraun","Olivgrün"]
+    },
+    meiden: [
+      { name: "Silber", color: "#C0C0C0" },
+      { name: "Kühles Rosa", color: "#F48FB1" },
+      { name: "Eisblau", color: "#B3E5FC" },
+      { name: "Marineblau-kühl", color: "#1A237E" },
+      { name: "Bordeaux-kühl", color: "#880E4F" },
+      { name: "Schwarz pur", color: "#111111" }
+    ]
+  },
+
+  "Tiefer Herbst": {
+    saison: "Herbst",
+    unterton: "warm",
+    kontrast: "hoch",
+    hautton: ["mittel","dunkel"],
+    haar: ["dunkelbraun","schwarz","rotbraun"],
+    augen: ["braun","dunkelbraun","schwarz-braun"],
+    beschreibung: "Der tiefe Herbst wirkt intensiv, reich und satt. Dunkle Haare, warme mittlere bis dunkle Haut und tiefe Augen bilden ein kraftvolles Bild in satten Erdtönen. Die besten Farben sind tief, warm und kräftig.",
+    palette: ["#8B1800","#701000","#5C0800","#903000","#6B3800","#482800","#7A2000","#3A5010","#284808","#4A6018","#5C2800","#401800"],
+    paletteNamen: ["Dunkelrot","Kastanie","Weinrot-warm","Rostbraun","Rehbraun","Espresso","Braunrot","Olivdunkel","Tannengrün","Moosgrün","Schokolade","Mahagoni"],
+    kleidung: {
+      "Tiefe Basics": ["Dunkelbraun","Olivgrün dunkel","Bordeaux warm","Moosgrün"],
+      "Akzentfarben": ["Kupfer","Weinrot","Tiefes Orange","Goldbraun"],
+      "Neutrale Töne": ["Espresso","Dunkelkhaki","Warmgrau","Schokolade"]
+    },
+    makeupAlltag: {
+      "Teint": ["Warm-Medium Foundation","Bronzer mittel","Koralle-Blusher"],
+      "Augen": ["Tiefe Erdtöne","Braunrot","Dunkelbraun Kajal"],
+      "Lippen": ["Braunrot","Terrakotta dunkel","Rosébrown"]
+    },
+    makeupBusiness: {
+      "Teint": ["Medium Warm Foundation","Warmer Bronzer","Dezenter Blusher"],
+      "Augen": ["Braun-Schwarz","Kajal Dunkelbraun","Mascara schwarz"],
+      "Lippen": ["Braunrot matt","Tiefes Nude","Warmbeige-braun"]
+    },
+    makeupAbend: {
+      "Teint": ["Reichhaltige Foundation","Bronze-Glow","Intensiver Highlighter"],
+      "Augen": ["Tiefes Smokey Brown","Kupferner Liner","Voluminöse Wimpern"],
+      "Lippen": ["Tiefes Bordeaux","Dunkelkoralle","Warmrot"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold","Rotgold","Kupfer","Bronze"],
+      "Schmuck": ["Tigerauge","Granat","Bernstein dunkel","Rubine"],
+      "Taschen & Schuhe": ["Dunkelbraun","Cognac","Kastanie","Weinrot"]
+    },
+    meiden: [
+      { name: "Hellrosa", color: "#F8BBD0" },
+      { name: "Babyblau", color: "#B3E5FC" },
+      { name: "Mintgrün", color: "#B2DFDB" },
+      { name: "Hellgelb", color: "#FFF9C4" },
+      { name: "Silber", color: "#C0C0C0" },
+      { name: "Lavendel", color: "#CE93D8" }
+    ]
+  },
+
+  "Weicher Herbst": {
+    saison: "Herbst",
+    unterton: "warm",
+    kontrast: "niedrig",
+    hautton: ["hell","mittel"],
+    haar: ["hellbraun","mittelbraun","aschblond"],
+    augen: ["haselnuss","graugrün","braun","hellbraun"],
+    beschreibung: "Der weiche Herbst ist sanft und geerdet. Das Erscheinungsbild ist gedämpft warm – nicht zu hell, nicht zu dunkel, mit wenig Kontrast. Die Farben sind wie durch einen Goldschleier gefiltert – weich, erdig, gemütlich.",
+    palette: ["#C06848","#A85838","#905038","#B87060","#D09080","#A06858","#C07868","#807060","#A08070","#C09888","#907868","#B08878"],
+    paletteNamen: ["Terrakotta-weich","Ziegelrosé","Altrosa-warm","Lachsrosa","Rosé-Kupfer","Mauve-warm","Dunkellachs","Rosataupe","Rotmauve","Pfirsich-grau","Warmes Grau","Altrosa"],
+    kleidung: {
+      "Weich-Warm Basics": ["Kaschmir","Olivgrün weich","Rosataupe","Salbei"],
+      "Akzentfarben": ["Warmkoralle dezent","Buttergelb","Altrosa","Mintolive"],
+      "Neutrale Töne": ["Greige","Warmgrau","Sand","Naturweiß"]
+    },
+    makeupAlltag: {
+      "Teint": ["Warm-Beige Foundation leicht","Pfirsich-Blusher","Dezenter Bronzer"],
+      "Augen": ["Warmbeige","Taupe-Braun","Dezenter Shimmer"],
+      "Lippen": ["Rosébrown","Nude-Pfirsich","Warmrosa dezent"]
+    },
+    makeupBusiness: {
+      "Teint": ["Warm Foundation","Naturbeige Puder","Dezenter Blusher"],
+      "Augen": ["Taupe","Braun Kajal","Braune Mascara"],
+      "Lippen": ["Nude-Warm","Rosébrown","Sanftes Ziegelrot"]
+    },
+    makeupAbend: {
+      "Teint": ["Warm Glow Foundation","Bronzer","Shimmer Highlighter"],
+      "Augen": ["Warm-Smokey Braun","Bronze-Akzent","Kupfer Liner"],
+      "Lippen": ["Warmrot gedämpft","Braunrot","Terrakotta"]
+    },
+    accessoires: {
+      "Metalle": ["Gelbgold matt","Roségold","Bronze"],
+      "Schmuck": ["Bernstein","Citrin","Holzperlen","Karamell-Jade"],
+      "Taschen & Schuhe": ["Camel","Warmbraun","Olivgrün","Sand"]
+    },
+    meiden: [
+      { name: "Kühles Schwarz", color: "#111111" },
+      { name: "Reines Weiß", color: "#F5F5F5" },
+      { name: "Eisblau", color: "#B3E5FC" },
+      { name: "Silber", color: "#C0C0C0" },
+      { name: "Kühles Grau", color: "#9E9E9E" },
+      { name: "Leuchtendes Lila", color: "#7B1FA2" }
+    ]
+  },
+
+  "Tiefer Winter": {
+    saison: "Winter",
+    unterton: "kühl",
+    kontrast: "hoch",
+    hautton: ["mittel","dunkel","sehr dunkel"],
+    haar: ["schwarz","dunkelbraun"],
+    augen: ["dunkelbraun","schwarz-braun","braun"],
+    beschreibung: "Der tiefe Winter ist intensiv, dramatisch und tief. Dunkle Haare, dunkle Augen und mittlere bis dunkle Haut mit kühlem Unterton ergeben ein kraftvolles Bild. Tiefe, kühle und kräftige Farben kommen bei diesem Typ am besten zur Geltung.",
+    palette: ["#8B0030","#700060","#4B0080","#2A0080","#180060","#001878","#003878","#004858","#006040","#204000","#5A0040","#900020"],
+    paletteNamen: ["Burgund","Dunkelmagenta","Dunkelviolett","Indigo","Dunkelblau","Marineblau","Stahlblau","Petrol","Dunkelgrün","Olivschwarz","Pflaume","Dunkelrot"],
+    kleidung: {
+      "Winter-Basics": ["Schwarz","Marine","Tieflila","Dunkelgrün kühl"],
+      "Akzentfarben": ["Eisblau","Smaragd","Weinrot-kühl","Fuchsia"],
+      "Neutrale Töne": ["Schwarz","Charcoal","Dunkelgrau","Weiß rein"]
+    },
+    makeupAlltag: {
+      "Teint": ["Kühle Medium Foundation","Transparenter Puder","Rosy Blusher"],
+      "Augen": ["Dunkelbraun-Grau","Schwarz Kajal","Schwarze Mascara"],
+      "Lippen": ["Kühles Nude-Brown","Mauve-Beere","Dunkel-Rosa"]
+    },
+    makeupBusiness: {
+      "Teint": ["Kühle mattes Foundation","Dezenter Blusher","Transparentes Puder"],
+      "Augen": ["Grau-Schwarz","Schwarzer Kajal","Voluminöse Mascara"],
+      "Lippen": ["Kühles Nude","Beere","Tiefes Rosé"]
+    },
+    makeupAbend: {
+      "Teint": ["Dramatisches Finish","Silber-Highlight","Intensiver Kontur"],
+      "Augen": ["Schwarzes Smokey Eye","Silber-Shimmer","Dramatischer Liner"],
+      "Lippen": ["Tiefes Dunkelrot","Bordeaux","Schwarz-Kirsche"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Platin","Schwarzgold"],
+      "Schmuck": ["Onyx","Saphir","Turmalin","Hämatit"],
+      "Taschen & Schuhe": ["Schwarz","Dunkelblau","Weinrot","Dunkelgrau"]
+    },
+    meiden: [
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Camel", color: "#C0913A" },
+      { name: "Warmgelb", color: "#F9A825" },
+      { name: "Hellrosa", color: "#F8BBD0" },
+      { name: "Pastell allgemein", color: "#E1BEE7" },
+      { name: "Erdtöne warm", color: "#795548" }
+    ]
+  },
+
+  "Klarer Winter": {
+    saison: "Winter",
+    unterton: "kühl",
+    kontrast: "hoch",
+    hautton: ["sehr hell","hell"],
+    haar: ["schwarz","dunkelbraun"],
+    augen: ["hellblau","blau","grün","eisblau"],
+    beschreibung: "Der klare Winter hat einen einzigartigen, starken Kontrast zwischen sehr heller Haut und dunklem Haar. Die Augen sind klar, leuchtend und kühl. Dieser Typ braucht klare, kontrastreiche, kühle Farben.",
+    palette: ["#9000A8","#C000A0","#E000A8","#B00038","#D00020","#280098","#1800B8","#009898","#00C0A0","#80C800","#E8D000","#0090D8"],
+    paletteNamen: ["Violett","Magenta","Knallpink","Weinrot","Scharlach","Dunkelblau","Kobalt","Türkis","Aqua","Gelbgrün","Zitrone","Himmelblau"],
+    kleidung: {
+      "Kontrast-Basics": ["Reines Weiß","Schwarz","Navy","Knallrot"],
+      "Akzentfarben": ["Fuchsia","Türkis","Königsblau","Smaragd"],
+      "Neutrale Töne": ["Schwarz","Weiß","Dunkelgrau","Silbergrau"]
+    },
+    makeupAlltag: {
+      "Teint": ["Sehr helle kühle Foundation","Rosé-Blusher","Heller Highlighter"],
+      "Augen": ["Hellgrau Lidschatten","Schwarzer Kajal","Schwarze Mascara"],
+      "Lippen": ["Klares Rot","Kühles Korallenrot","Helles Fuchsia"]
+    },
+    makeupBusiness: {
+      "Teint": ["Helle kühle Foundation","Puder transparent","Dezenter Blusher"],
+      "Augen": ["Grau-Silber","Schwarzer Eyeliner","Voluminöse Mascara"],
+      "Lippen": ["Kühles Rot","Beere","Dunkles Mauve"]
+    },
+    makeupAbend: {
+      "Teint": ["Dramatisches Porzellanfinish","Silber Highlight","Kontur kühl"],
+      "Augen": ["Schwarzes Smokey","Silber oder Blau Shimmer","Langer Liner"],
+      "Lippen": ["Tiefes Rot","Bordeaux-kühl","Dunkles Fuchsia"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Platin","Weißgold"],
+      "Schmuck": ["Diamanten","Saphire","Türkise","Onyx"],
+      "Taschen & Schuhe": ["Schwarz","Weiß","Marine","Bordeaux"]
+    },
+    meiden: [
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Camel", color: "#C0913A" },
+      { name: "Erdbraun warm", color: "#795548" },
+      { name: "Olivgrün", color: "#558B2F" },
+      { name: "Pastell", color: "#F8BBD0" },
+      { name: "Goldgelb", color: "#FFD600" }
+    ]
+  },
+
+  "Kühler Winter": {
+    saison: "Winter",
+    unterton: "kühl",
+    kontrast: "mittel",
+    hautton: ["sehr hell","hell","mittel"],
+    haar: ["dunkelbraun","schwarz","aschblond","grau/weiß"],
+    augen: ["blaugrau","grau","blau","graugrün"],
+    beschreibung: "Der kühle Winter ist elegant und klar. Der kühle Unterton dominiert das Gesamtbild, der Kontrast ist mittel. Kühle, klare Farben in mittlerer bis hoher Intensität schmeicheln am besten.",
+    palette: ["#E040B0","#C82898","#B01880","#9010A8","#6808C0","#4010D0","#2830B8","#2060A8","#1890A0","#209090","#408040","#C040A0"],
+    paletteNamen: ["Fuchsia","Dunkelrosa","Himbeere","Lila","Dunkelviolett","Blauviolett","Kobalt","Königsblau","Petrol","Teal","Smaragd","Magenta"],
+    kleidung: {
+      "Kühle Basics": ["Marine","Weinrot kühl","Dunkelgrün","Mittelgrau"],
+      "Akzentfarben": ["Königsblau","Violett","Smaragd","Fuchsia"],
+      "Neutrale Töne": ["Dunkelgrau","Schwarz","Kalt-Weiß","Anthrazit"]
+    },
+    makeupAlltag: {
+      "Teint": ["Kühle Foundation","Rosé-Puder","Blusher Pink"],
+      "Augen": ["Grau-Mauve","Schwarzer Kajal","Blaue Mascara"],
+      "Lippen": ["Kühles Pink","Mauve","Rosé-Beere"]
+    },
+    makeupBusiness: {
+      "Teint": ["Mattes kühles Finish","Dezenter Blusher","Transparentes Puder"],
+      "Augen": ["Dunkelgrau Lidschatten","Schwarzer Liner","Schwarze Mascara"],
+      "Lippen": ["Kühles Nude-Pink","Beere-Rosé","Bordeaux-kühl"]
+    },
+    makeupAbend: {
+      "Teint": ["Silber-Highlight","Kühl-Glow","Kontur grau"],
+      "Augen": ["Silber-Rauch Smokey","Violett-Akzent","Langer Liner"],
+      "Lippen": ["Dunkelrot-kühl","Tieflila","Bordeaux"]
+    },
+    accessoires: {
+      "Metalle": ["Silber","Platin","Weißgold"],
+      "Schmuck": ["Saphire","Amethyste","Türkis","Perlen weiß"],
+      "Taschen & Schuhe": ["Marine","Schwarz","Bordeaux","Dunkelgrau"]
+    },
+    meiden: [
+      { name: "Orange", color: "#FF6D00" },
+      { name: "Warmbraun", color: "#795548" },
+      { name: "Camel", color: "#C0913A" },
+      { name: "Goldgelb", color: "#FFD600" },
+      { name: "Koralle-warm", color: "#FF7043" },
+      { name: "Kupfer", color: "#BF6830" }
+    ]
+  }
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let state = {
+  name: '', date: '', note: '',
+  hautton: '', unterton: '', haar: '', augen: '', kontrast: '',
+  uploadedImage: null,
+  result: null
+};
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function goStep(n) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('loadingSection').classList.remove('active');
+  document.getElementById('step'+n).classList.add('active');
+
+  for(let i=1;i<=4;i++){
+    const dot = document.getElementById('dot'+i);
+    dot.classList.remove('active','done');
+    if(i<n) dot.classList.add('done');
+    else if(i===n) dot.classList.add('active');
+  }
+
+  if(n===1) {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('consultDate').value = today;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RADIO BUTTONS
+// ═══════════════════════════════════════════════════════════════
+function selectRadio(el, group, val) {
+  document.querySelectorAll('#rg-'+group+' .radio-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  state[group] = val;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FOTO UPLOAD & FARB-EXTRAKTION
+// ═══════════════════════════════════════════════════════════════
+function handlePhotos(event) {
+  const files = Array.from(event.target.files);
+  if(!files.length) return;
+
+  const container = document.getElementById('previewContainer');
+  container.innerHTML = '';
+  state.uploadedImage = null;
+
+  files.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'preview-img';
+      container.appendChild(img);
+      if(i===0) {
+        state.uploadedImage = e.target.result;
+        extractColors(e.target.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function extractColors(dataUrl) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    const size = 80;
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    const data = ctx.getImageData(0, 0, size, size).data;
+
+    // Sample zones: center (face area), top (hair), corners
+    const zones = [
+      { name: 'Haut', region: [size*0.3, size*0.3, size*0.7, size*0.7] },
+      { name: 'Haare', region: [size*0.2, 0, size*0.8, size*0.25] },
+      { name: 'Highlights', region: [0, 0, size*0.3, size*0.3] }
+    ];
+
+    const section = document.getElementById('colorExtractSection');
+    const display = document.getElementById('extractedColors');
+    display.innerHTML = '';
+
+    zones.forEach(zone => {
+      const [x1,y1,x2,y2] = zone.region;
+      let r=0,g=0,b=0,count=0;
+      for(let y=Math.floor(y1);y<Math.floor(y2);y++){
+        for(let x=Math.floor(x1);x<Math.floor(x2);x++){
+          const idx=(y*size+x)*4;
+          r+=data[idx]; g+=data[idx+1]; b+=data[idx+2]; count++;
+        }
+      }
+      r=Math.round(r/count); g=Math.round(g/count); b=Math.round(b/count);
+      const hex = '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+
+      const sw = document.createElement('div');
+      sw.className = 'color-swatch';
+      sw.innerHTML = `<div class="swatch-circle" style="background:${hex}"></div><div class="swatch-label">${zone.name}<br>${hex}</div>`;
+      display.appendChild(sw);
+    });
+
+    section.style.display='block';
+  };
+  img.src = dataUrl;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ANALYSE
+// ═══════════════════════════════════════════════════════════════
+function analyzeColorType() {
+  state.name = document.getElementById('customerName').value || 'Kundin';
+  state.date = document.getElementById('consultDate').value;
+  state.note = document.getElementById('consultNote').value;
+
+  // Score each type
+  const scores = {};
+  Object.entries(FARBTYPEN).forEach(([name, typ]) => {
+    let score = 0;
+    if(state.unterton && typ.unterton === state.unterton) score += 30;
+    if(state.kontrast && typ.kontrast === state.kontrast) score += 25;
+    if(state.hautton && typ.hautton.includes(state.hautton)) score += 20;
+    if(state.haar && typ.haar.includes(state.haar)) score += 15;
+    if(state.augen && typ.augen.includes(state.augen)) score += 10;
+    scores[name] = score;
+  });
+
+  // Sort by score
+  const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+  const bestName = sorted[0][0];
+  const bestScore = sorted[0][1];
+  const maxPossible = 100;
+  const confidence = Math.min(98, Math.round((bestScore / maxPossible) * 100) + 35);
+
+  // Build alternatives (2nd and 3rd)
+  const alternatives = sorted.slice(1,4).map(([n,s]) => ({
+    name: n,
+    pct: Math.min(95, Math.round((s/maxPossible)*100) + 20)
+  })).filter(a => a.pct > 30);
+
+  state.result = { type: bestName, confidence, alternatives };
+
+  // Show loading
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('loadingSection').classList.add('active');
+
+  setTimeout(() => {
+    document.getElementById('loadingSection').classList.remove('active');
+    renderResult();
+    goStep(4);
+  }, 1800);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ERGEBNIS RENDERN
+// ═══════════════════════════════════════════════════════════════
+function renderResult() {
+  const typ = FARBTYPEN[state.result.type];
+  const { confidence, alternatives } = state.result;
+
+  // Hero
+  document.getElementById('resultTypeName').textContent = state.result.type;
+  document.getElementById('resultTypeSubtitle').textContent = typ.saison + ' · ' + (typ.unterton==='warm'?'Warmer Unterton':typ.unterton==='kühl'?'Kühler Unterton':'Neutraler Unterton');
+  document.getElementById('confidenceText').textContent = confidence + '% Übereinstimmung';
+  setTimeout(() => {
+    document.getElementById('confidenceFill').style.width = confidence + '%';
+  }, 100);
+
+  // Kundendaten
+  document.getElementById('customerSummary').textContent =
+    state.name + (state.date ? ' · ' + formatDate(state.date) : '');
+
+  // Notiz
+  const noteEl = document.getElementById('noteDisplay');
+  noteEl.innerHTML = state.note ? `<div class="result-note">📝 ${state.note}</div>` : '';
+
+  // Beschreibung
+  document.getElementById('typeDescription').textContent = typ.beschreibung;
+
+  // Alternativen
+  const altCard = document.getElementById('altCard');
+  if(alternatives.length > 0) {
+    altCard.style.display = 'block';
+    document.getElementById('altTypes').innerHTML = alternatives.map(a =>
+      `<div class="alt-type-chip">${a.name}<div class="alt-bar"><div class="alt-fill" style="width:${a.pct}%"></div></div>${a.pct}%</div>`
+    ).join('');
+  }
+
+  // Palette
+  const pg = document.getElementById('paletteGrid');
+  pg.innerHTML = typ.palette.map((color, i) =>
+    `<div class="palette-color" style="background:${color}" title="${typ.paletteNamen[i]}">
+      <div class="palette-color-name">${typ.paletteNamen[i]}</div>
+    </div>`
+  ).join('');
+
+  // Kleidung
+  renderRecGrid('clothingRecs', typ.kleidung);
+
+  // Make-up
+  renderRecGrid('makeupAlltag', typ.makeupAlltag);
+  renderRecGrid('makeupBusiness', typ.makeupBusiness);
+  renderRecGrid('makeupAbend', typ.makeupAbend);
+
+  // Accessoires
+  renderRecGrid('accessoryRecs', typ.accessoires);
+
+  // Meiden
+  const avoidEl = document.getElementById('avoidColors');
+  avoidEl.innerHTML = typ.meiden.map(f =>
+    `<div class="avoid-tag"><div class="avoid-dot" style="background:${f.color}"></div>${f.name}</div>`
+  ).join('');
+}
+
+function renderRecGrid(id, obj) {
+  const el = document.getElementById(id);
+  el.innerHTML = Object.entries(obj).map(([title, items]) =>
+    `<div class="rec-card"><h4>✦ ${title}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`
+  ).join('');
+}
+
+function formatDate(d) {
+  if(!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}.${m}.${y}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABS MAKE-UP
+// ═══════════════════════════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PNG EXPORT
+// ═══════════════════════════════════════════════════════════════
+function exportPNG() {
+  const typ = FARBTYPEN[state.result.type];
+  const canvas = document.getElementById('outputCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 1200, H = 700;
+  canvas.width = W; canvas.height = H;
+
+  // Background
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#f2e4e1'); bg.addColorStop(1,'#f5edd8');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Gold border
+  ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 3;
+  ctx.strokeRect(15,15,W-30,H-30);
+
+  // Foto links
+  if(state.uploadedImage) {
+    const img = new Image();
+    img.onload = () => {
+      const imgX=50, imgY=80, imgW=420, imgH=480;
+      ctx.save();
+      roundedRect(ctx, imgX, imgY, imgW, imgH, 16);
+      ctx.clip();
+      ctx.drawImage(img, imgX, imgY, imgW, imgH);
+      ctx.restore();
+      ctx.strokeStyle='#c9a84c'; ctx.lineWidth=2;
+      roundedRect(ctx, imgX, imgY, imgW, imgH, 16);
+      ctx.stroke();
+      drawTextAndPalette(ctx, typ, W, H);
+      downloadCanvas(canvas);
+    };
+    img.src = state.uploadedImage;
+  } else {
+    drawTextAndPalette(ctx, typ, W, H);
+    downloadCanvas(canvas);
+  }
+}
+
+function drawTextAndPalette(ctx, typ, W, H) {
+  // Name der Kundin
+  ctx.fillStyle = '#a8958f';
+  ctx.font = '300 18px "Jost"';
+  ctx.textAlign = 'left';
+  ctx.fillText(state.name + (state.date ? ' · ' + formatDate(state.date) : ''), 520, 60);
+
+  // Farbtyp Name
+  ctx.fillStyle = '#2d2420';
+  ctx.font = '300 52px "Cormorant Garamond"';
+  ctx.fillText(state.result.type, 520, 130);
+
+  // Saison
+  ctx.fillStyle = '#c9a84c';
+  ctx.font = '400 20px "Jost"';
+  ctx.fillText(typ.saison.toUpperCase() + ' · ' + state.result.confidence + '% ÜBEREINSTIMMUNG', 520, 165);
+
+  // Trennlinie
+  ctx.strokeStyle='#e8d5a3'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(520,185); ctx.lineTo(W-50,185); ctx.stroke();
+
+  // Beschreibung (gekürzt)
+  ctx.fillStyle='#6b5c58'; ctx.font='300 16px "Jost"';
+  const descWords = typ.beschreibung.split(' ');
+  let line='', lineY=215, lineH=26;
+  descWords.forEach(w => {
+    const test = line + w + ' ';
+    if(ctx.measureText(test).width > 600 && line) {
+      ctx.fillText(line, 520, lineY); line=w+' '; lineY+=lineH;
+      if(lineY > 320) return;
+    } else { line=test; }
+  });
+  if(lineY<=320) ctx.fillText(line, 520, lineY);
+
+  // Palette
+  ctx.fillStyle='#6b5c58'; ctx.font='500 13px "Jost"';
+  ctx.fillText('FARBPALETTE', 520, 360);
+  const swSize=50, swGap=8, swY=375;
+  typ.palette.slice(0,12).forEach((color, i) => {
+    const col = i % 12;
+    const x = 520 + col*(swSize+swGap);
+    ctx.fillStyle = color;
+    roundedRectFill(ctx, x, swY, swSize, swSize, 8);
+  });
+
+  // Headline Empfehlungen
+  ctx.fillStyle='#6b5c58'; ctx.font='500 13px "Jost"';
+  ctx.fillText('TOP-FARBEN FÜR KLEIDUNG', 520, 475);
+  const topColors = Object.values(typ.kleidung)[0].slice(0,5);
+  ctx.fillStyle='#2d2420'; ctx.font='300 15px "Jost"';
+  ctx.fillText(topColors.join(' · '), 520, 500);
+
+  ctx.fillText('METALLE: ' + Object.values(typ.accessoires)[0].join(' · '), 520, 530);
+
+  // Footer
+  ctx.fillStyle='#c9a84c'; ctx.font='300 14px "Cormorant Garamond"';
+  ctx.textAlign='center';
+  ctx.fillText('Professionelle Farbberatung', W/2, H-30);
+}
+
+function roundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+function roundedRectFill(ctx,x,y,w,h,r) { roundedRect(ctx,x,y,w,h,r); ctx.fill(); }
+
+function downloadCanvas(canvas) {
+  const link = document.createElement('a');
+  link.download = 'Farbberatung_' + state.name.replace(/\s+/g,'_') + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PDF EXPORT
+// ═══════════════════════════════════════════════════════════════
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const typ = FARBTYPEN[state.result.type];
+  const W=210, margin=20;
+
+  // Background hellcreme
+  doc.setFillColor(250,246,240);
+  doc.rect(0,0,W,297,'F');
+
+  // Gold Rahmen
+  doc.setDrawColor(201,168,76); doc.setLineWidth(0.5);
+  doc.rect(8,8,W-16,281);
+
+  // Header Bereich
+  doc.setFillColor(242,228,225);
+  doc.rect(8,8,W-16,35,'F');
+
+  // Logo Platzhalter
+  doc.setDrawColor(201,168,76); doc.setLineWidth(0.3);
+  doc.rect(margin, 13, 40, 8);
+  doc.setTextColor(201,168,76); doc.setFontSize(7);
+  doc.setFont('helvetica','normal');
+  doc.text('DEIN LOGO', margin+2, 18.5);
+
+  // Titel
+  doc.setTextColor(45,36,32); doc.setFontSize(22);
+  doc.setFont('helvetica','normal');
+  doc.text('Farbtyp-Analyse', W/2, 28, { align:'center' });
+  doc.setFontSize(8); doc.setTextColor(168,149,143);
+  doc.text('PROFESSIONELLE FARBBERATUNG', W/2, 35, { align:'center' });
+
+  let y = 55;
+
+  // Kundin + Datum
+  doc.setFontSize(9); doc.setTextColor(168,149,143);
+  doc.text(state.name.toUpperCase() + (state.date ? '  ·  ' + formatDate(state.date) : ''), W/2, y, { align:'center' });
+  y += 12;
+
+  // Farbtyp groß
+  doc.setFontSize(28); doc.setTextColor(45,36,32);
+  doc.text(state.result.type, W/2, y, { align:'center' });
+  y += 8;
+
+  // Saison + Confidence
+  doc.setFontSize(9); doc.setTextColor(201,168,76);
+  doc.text((typ.saison + '  ·  ' + (typ.unterton==='warm'?'Warmer Unterton':typ.unterton==='kühl'?'Kühler Unterton':'Neutraler Unterton') + '  ·  ' + state.result.confidence + '% Übereinstimmung').toUpperCase(), W/2, y, { align:'center' });
+  y += 8;
+
+  // Gold Linie
+  doc.setDrawColor(232,213,163); doc.setLineWidth(0.3);
+  doc.line(margin, y, W-margin, y);
+  y += 10;
+
+  // Foto einfügen wenn vorhanden
+  if(state.uploadedImage) {
+    try {
+      doc.addImage(state.uploadedImage, 'JPEG', margin, y, 55, 65, '', 'FAST');
+    } catch(e) {}
+    // Beschreibung neben Foto
+    doc.setFontSize(8); doc.setTextColor(107,92,88);
+    const lines = doc.splitTextToSize(typ.beschreibung, 100);
+    doc.text(lines.slice(0,7), margin+60, y+5);
+    y += 75;
+  } else {
+    // Nur Beschreibung
+    doc.setFontSize(9); doc.setTextColor(107,92,88);
+    const lines = doc.splitTextToSize(typ.beschreibung, W-2*margin);
+    doc.text(lines, margin, y);
+    y += lines.length * 5 + 5;
+  }
+
+  // Notiz
+  if(state.note) {
+    doc.setFillColor(242,228,225);
+    doc.rect(margin, y, W-2*margin, 10, 'F');
+    doc.setFontSize(8); doc.setTextColor(107,92,88);
+    doc.text('📝 ' + state.note, margin+3, y+6.5);
+    y += 16;
+  }
+
+  // FARBPALETTE
+  doc.setFillColor(245,237,216);
+  doc.rect(margin, y, W-2*margin, 6,'F');
+  doc.setFontSize(8); doc.setTextColor(45,36,32);
+  doc.setFont('helvetica','bold');
+  doc.text('FARBPALETTE', margin+3, y+4.5);
+  doc.setFont('helvetica','normal');
+  y += 9;
+
+  const swS=13, swG=2;
+  typ.palette.forEach((color, i) => {
+    const x = margin + i*(swS+swG);
+    const rgb = hexToRgb(color);
+    doc.setFillColor(rgb.r,rgb.g,rgb.b);
+    doc.roundedRect(x, y, swS, swS, 2,2,'F');
+    doc.setFontSize(5); doc.setTextColor(100,90,85);
+    doc.text(typ.paletteNamen[i], x+swS/2, y+swS+3, {align:'center', maxWidth: swS+swG});
+  });
+  y += swS + 8;
+
+  // Zweispaltig: Kleidung | Make-up Alltag
+  doc.setDrawColor(232,213,163); doc.setLineWidth(0.3);
+  doc.line(margin, y-2, W-margin, y-2);
+
+  const colW = (W-2*margin-10)/2;
+  let leftY = y+3, rightY = y+3;
+
+  // Links: Kleidung
+  doc.setFontSize(8); doc.setTextColor(201,168,76); doc.setFont('helvetica','bold');
+  doc.text('KLEIDUNGSEMPFEHLUNGEN', margin, leftY); leftY+=5;
+  doc.setFont('helvetica','normal');
+  Object.entries(typ.kleidung).forEach(([title, items]) => {
+    doc.setFontSize(7.5); doc.setTextColor(45,36,32); doc.setFont('helvetica','bold');
+    doc.text(title, margin, leftY); leftY+=4;
+    doc.setFont('helvetica','normal'); doc.setTextColor(107,92,88);
+    items.forEach(item => {
+      doc.text('· ' + item, margin+3, leftY); leftY+=3.5;
+    });
+    leftY+=1;
+  });
+
+  // Rechts: Make-up
+  const rx = margin+colW+10;
+  doc.setFontSize(8); doc.setTextColor(201,168,76); doc.setFont('helvetica','bold');
+  doc.text('MAKE-UP ALLTAG', rx, rightY); rightY+=5;
+  doc.setFont('helvetica','normal');
+  Object.entries(typ.makeupAlltag).forEach(([title, items]) => {
+    doc.setFontSize(7.5); doc.setTextColor(45,36,32); doc.setFont('helvetica','bold');
+    doc.text(title, rx, rightY); rightY+=4;
+    doc.setFont('helvetica','normal'); doc.setTextColor(107,92,88);
+    items.forEach(item => {
+      doc.text('· ' + item, rx+3, rightY); rightY+=3.5;
+    });
+    rightY+=1;
+  });
+
+  y = Math.max(leftY, rightY) + 5;
+
+  // Vertikale Trennlinie
+  doc.setDrawColor(232,213,163);
+  doc.line(margin+colW+5, y-Math.max(leftY,rightY)-5+y-5, margin+colW+5, y);
+
+  // Accessoires + Meiden
+  doc.setDrawColor(232,213,163); doc.line(margin,y,W-margin,y); y+=6;
+
+  doc.setFontSize(8); doc.setTextColor(201,168,76); doc.setFont('helvetica','bold');
+  doc.text('METALLE & ACCESSOIRES', margin, y); y+=5;
+  doc.setFont('helvetica','normal'); doc.setTextColor(107,92,88); doc.setFontSize(7.5);
+  const metalText = 'Metalle: ' + typ.accessoires['Metalle'].join(', ');
+  doc.text(metalText, margin, y); y+=4;
+  doc.text('Schmuck: ' + typ.accessoires['Schmuck'].join(', '), margin, y); y+=8;
+
+  // Meiden
+  doc.setFontSize(8); doc.setTextColor(201,168,76); doc.setFont('helvetica','bold');
+  doc.text('DIESE FARBEN BESSER MEIDEN', margin, y); y+=5;
+  doc.setFont('helvetica','normal');
+  let mX = margin;
+  typ.meiden.forEach(f => {
+    const rgb = hexToRgb(f.color);
+    doc.setFillColor(rgb.r,rgb.g,rgb.b);
+    doc.circle(mX+2.5, y+1.5, 2.5,'F');
+    doc.setFontSize(7); doc.setTextColor(107,92,88);
+    doc.text(f.name, mX+7, y+3);
+    mX += doc.getTextWidth(f.name)+15;
+    if(mX > W-margin-30) { mX=margin; y+=7; }
+  });
+
+  y += 12;
+  // Footer
+  doc.setDrawColor(201,168,76); doc.line(margin, 278, W-margin, 278);
+  doc.setFontSize(7); doc.setTextColor(168,149,143);
+  doc.text('Professionelle Farbberatung  ·  ' + state.name + '  ·  ' + formatDate(state.date), W/2, 284, {align:'center'});
+
+  doc.save('Farbberatung_' + state.name.replace(/\s+/g,'_') + '.pdf');
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return {r,g,b};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NEUE BERATUNG
+// ═══════════════════════════════════════════════════════════════
+function newConsult() {
+  state = { name:'',date:'',note:'',hautton:'',unterton:'',haar:'',augen:'',kontrast:'',uploadedImage:null,result:null };
+  document.getElementById('customerName').value='';
+  document.getElementById('consultNote').value='';
+  document.getElementById('previewContainer').innerHTML='';
+  document.getElementById('colorExtractSection').style.display='none';
+  document.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('altCard').style.display='none';
+  document.getElementById('confidenceFill').style.width='0%';
+  goStep(1);
+}
+
+// Init
+document.getElementById('consultDate').value = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
